@@ -1,54 +1,162 @@
 /**
- * Add describes an addition operation.
- * @param a First number
- * @param b Second Number
- * @returns Adder result
+ * ReduceAlgorithm describes the algorithm used to reduce the data.
  */
-export function add(a: number, b: number): number {
-  return a + b;
+export abstract class ReduceAlgorithm {
+  constructor(protected collection: number[]) {
+    this.collection = collection;
+  }
+
+  /**
+   * getCollection() returns the collection.
+   * @returns {number} collection
+   */
+  getCollection(): number[] {
+    return this.collection;
+  }
+
+  /**
+   * run() is the entry point of the algorithm.
+   * @returns {number}
+   */
+  public run() {
+    // Hook
+    this.beforeInit();
+    // Reduce method
+    this.reduce();
+    // Hook
+    this.afterInit();
+  }
+
+  /**
+   * reduce() is the core of the algorithm. It must be implemented by subclasses.
+   */
+  protected abstract reduce(): number;
+  /**
+   * beforeInit() is a hook that is called before the reduce() method.
+   */
+  protected beforeInit(): void {}
+  /**
+   * afterInit() is a hook that is called after the reduce() method.
+   */
+  protected afterInit(): void {}
 }
 
-// Language: typescript
-// hacer uso del patron facade para desarrollar la suma y el producto
-
-export class Adder {
-  public simpleAdd(a: number, b: number): number {
-    return a + b;
+/**
+ * Sum is a concrete implementation of the ReduceAlgorithm.
+ */
+export class Sum extends ReduceAlgorithm {
+  constructor(protected collection: number[]) {
+    super(collection);
   }
 
-  public complexAdd(...myArgs: number[]): number {
-    return myArgs.reduce((acc, curr) => acc + curr);
-  }
-}
-
-export class Product {
-  public simpleProduct(a: number, b: number): number {
-    return a * b;
+  /**
+   * beforeInit() is a hook that is called before the reduce() method.
+   */
+  protected beforeInit(): void {
+    console.log('Before Add');
   }
 
-  public complexProduct(...myArgs: number[]): number {
-    return myArgs.reduce((acc, curr) => acc * curr);
+  /**
+   * afterInit() is a hook that is called after the reduce() method.
+   */
+  protected afterInit(): void {
+    console.log('After Add');
   }
-}
 
-export class Facade {
-  constructor(private adder: Adder, private product: Product) {}
-
-  public powAndNumber(base: number, exponent: number, delta: number[]): number {
-    const myNum = [];
-
-    for (let i = 0; i < exponent; i++) {
-      myNum.push(base);
+  /**
+   * reduce() is the core of the algorithm.
+   * @returns {number} The sum of the collection.
+   */
+  protected reduce(): number {
+    let sum: number = 0;
+    for (let i = 0; i < this.collection.length; i++) {
+      sum += this.collection[i];
     }
-
-    return this.product.complexProduct(...myNum) + 
-      this.adder.complexAdd(...delta);
+    console.log(sum);
+    return sum;
   }
 }
 
-export function clientCode(facade: Facade): number {
-  const delta = [1, 2, 3];
-  return facade.powAndNumber(2, 3, delta);
+/**
+ * Substract is a concrete implementation of the ReduceAlgorithm.
+ */
+export class Substract extends ReduceAlgorithm {
+  constructor(collection: number[]) {
+    super(collection);
+  }
+
+  /**
+   * beforeInit() is a hook that is called before the reduce() method.
+   */
+  protected beforeInit(): void {
+    console.log('Before substract');
+  }
+
+  /**
+   * afterInit() is a hook that is called after the reduce() method.
+   */
+  protected afterInit(): void {
+    console.log('After substract');
+  }
+
+  /**
+   * reduce() is the core of the algorithm.
+   * @returns {number} The substract of the collection.
+   */
+  protected reduce(): number {
+    let sum: number = 0;
+    for (let i = 0; i < this.collection.length; i++) {
+      sum -= this.collection[i];
+    }
+    console.log(sum);
+    return sum;
+  }
 }
 
-console.log(clientCode(new Facade(new Adder(), new Product())));
+/**
+ * Product is a concrete implementation of the ReduceAlgorithm.
+ */
+export class Product extends ReduceAlgorithm {
+  constructor(collection: number[]) {
+    super(collection);
+  }
+
+  /**
+   * beforeInit() is a hook that is called before the reduce() method.
+   */
+  protected beforeInit(): void {
+    console.log('Before product');
+  }
+
+  /**
+   * afterInit() is a hook that is called after the reduce() method.
+   */
+  protected afterInit(): void {
+    console.log('After product');
+  }
+
+  /**
+   * reduce() is the core of the algorithm.
+   * @returns {number} The product of the collection.
+   */
+  protected reduce(): number {
+    let sum: number = 1;
+    for (let i = 0; i < this.collection.length; i++) {
+      sum *= this.collection[i];
+    }
+    console.log(sum);
+    return sum;
+  }
+}
+
+/**
+ * client code that uses the algorithm.
+ * @param algorithm Return the algorithm to use.
+ */
+export function clientCode(algorithm: ReduceAlgorithm) {
+  algorithm.run();
+}
+
+clientCode(new Sum([1, 2, 3, 4, 5]));
+clientCode(new Substract([1, 2, 3]));
+clientCode(new Product([1, 2]));

@@ -7,7 +7,7 @@
     "test": "mocha",
     "testJest": "jest",
     "doc": "typedoc",
-    "start": "tsc-watch --onSuccess \"node dist/indexNode.js\"",
+    "start": "tsc-watch --onSuccess \"node dist/index.js\"",
     "coverage": "nyc npm test && nyc report --reporter=lcov"
   },
   "keywords": [],
